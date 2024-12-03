@@ -1,0 +1,39 @@
+# CDK asset staging directory
+.cdk.staging
+cdk.out/
+
+# TypeScript build artifacts
+dist/
+*.js
+*.d.ts
+!jest.config.js
+
+# Dependencies
+node_modules/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Test coverage
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript incremental compilation cache
+*.tsbuildinfo
+
+# CDK context
+cdk.context.json
