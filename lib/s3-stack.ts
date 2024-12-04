@@ -15,7 +15,10 @@ export class S3Stack extends cdk.Stack {
       encryption: s3.BucketEncryption.S3_MANAGED,
       enforceSSL: true,
       versioned: true,
-      removalPolicy: cdk.RemovalPolicy.DESTROY, // For demo purposes only
+      // The following settings are for demo purposes, to ensure easy teardowns
+      // you may want to revisit these settings for a production environment
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
     });
 
     // Updated path to assets directory
