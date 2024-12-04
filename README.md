@@ -183,20 +183,73 @@ Part 2: Testing API Access
 └── package.json
 ```
 
-## How it works 
+## How it works
 
-The deployment creates an API Gateway with the following endpoints:
+The system implements secure document access control through several interconnected components:
 
-- `GET /documents/{documentId}`
-  - Retrieves a document from S3
-  - Requires Authorization header with WorkOS FGA token
-  - Access controlled by WorkOS FGA rules
+### Infrastructure Components
 
-Example request:
+1. **S3 Bucket (`S3Stack`)**
+   - Stores documents with private access and server-side encryption
+   - Blocks all public access
+   - Configured with versioning enabled for audit trails
+   - Pre-populated with sample documents during deployment
 
+2. **API Gateway (`ApiGatewayStack`)**
+   - Provides a RESTful interface for document access
+   - Implements a token-based authorization flow
+   - Routes:
+     - `GET /documents/{documentId}` - Retrieves documents from S3
+   - Integrates directly with S3 using AWS IAM roles
+
+3. **Lambda Authorizer**
+   - Validates JWT tokens and performs WorkOS FGA authorization checks
+   - Runs before any API request to verify permissions
+   - Generates AWS IAM policies dynamically based on FGA results
+
+### Authorization Flow
+
+1. Client makes a request with a JWT token:
 ```bash
-curl -H "Authorization: Bearer ${TOKEN}" \
+curl -H "Authorization: Bearer ${JWT_TOKEN}" \
      https://${API_ID}.execute-api.${REGION}.amazonaws.com/prod/documents/team-doc-1.txt
+```
+
+2. The Lambda authorizer:
+   - Extracts and validates the JWT token
+   - Retrieves the user ID from the token
+   - Checks WorkOS FGA to verify if the user has 'viewer' access to the requested document
+   - Returns an IAM policy allowing or denying access
+
+3. If authorized:
+   - API Gateway uses its IAM role to fetch the document from S3
+   - Returns the document content to the client
+
+4. If unauthorized:
+   - Returns a 403 Forbidden response
+
+### WorkOS FGA Integration
+
+The system uses WorkOS FGA to implement relationship-based access control:
+- Documents can have owners, editors, and viewers
+- Team memberships can grant access to team documents
+- Access inheritance is supported (e.g., owners automatically get editor permissions)
+
+Example FGA check from the authorizer:
+```typescript
+const checkResponse = await workos.fga.check({
+  checks: [{
+    resource: { 
+      resourceType: 'report',
+      resourceId: documentId 
+    },
+    relation: 'viewer',
+    subject: {
+      resourceType: 'user',
+      resourceId: userId
+    }
+  }]
+});
 ```
 
 ## Development
