@@ -1,8 +1,8 @@
-# WorkOS FGA S3 Authorization Demo
+# WorkOS FGA + AWS S3 Lambda authorizer demo
 
 ![WorkOS FGA S3 Demo](./img/fga-lambda-authorizer.webp)
 
-A project demonstrating an implementation of fine-grained authorization for AWS S3 using WorkOS FGA and AWS Lambda authorizers. This project deploys serverless infrastructure that showcases secure document access control.
+This project demonstrates an implementation of fine-grained authorization for AWS S3 using [WorkOS FGA](https://workos.com/fine-grained-authorization) and AWS Lambda authorizers. This project deploys serverless infrastructure that showcases secure document access control.
 
 ## Overview
 
@@ -164,6 +164,7 @@ Part 2: Testing API Access
    🛡️  Error: {"Message":"User is not authorized to access this resource with an explicit deny"}
 ```
 
+You can review the `demo.ts` script to see how FGA warrants are defined and used in checks, and how requests are made to the deployed Lambda + API Gateway infrastructure. 
 
 ## Project Structure
 
@@ -214,6 +215,7 @@ The system implements secure document access control through several interconnec
 curl -H "Authorization: Bearer ${JWT_TOKEN}" \
      https://${API_ID}.execute-api.${REGION}.amazonaws.com/prod/documents/team-doc-1.txt
 ```
+   *Note: In this demo, the JWT token is simulated. In a production environment, you would typically have an Identity Provider (IdP) and OAuth setup that issues the token representing a user.*
 
 2. The Lambda authorizer:
    - Extracts and validates the JWT token
