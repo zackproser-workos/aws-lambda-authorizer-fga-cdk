@@ -111,6 +111,7 @@ When you run `npm run demo`, you'll see a comprehensive demonstration of the FGA
 > workos-fga-lambda-s3@1.0.0 demo
 > ts-node scripts/demo.ts
 
+
 📚 WorkOS FGA Demo: Document Access Control
 
 Part 1: Testing FGA Rules Directly
@@ -144,24 +145,72 @@ Part 2: Testing API Access
    Scenario: 👩 Alice accessing her personal document (owner-only-doc.txt)
    Expectation: Access should be granted (Alice is owner)
 
-   ✅ Successfully accessed document
-   📄 Document content read from S3: "This is a sample document accessible only by its owner. "
+   🎟️  Creating JWT token for user: alice
+   📝 Token payload: {
+  "sub": "alice"
+}
+
+   🌐 Making API request:
+   └── URL: https://4qw19xcy87.execute-api.us-east-1.amazonaws.com/prod//documents/owner-only-doc.txt
+   └── Headers:
+      ├── Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
+      └── Warrant-Token: MTczMzMzODIzMjgxMjk1...
+
+   ⏳ Awaiting response from Lambda authorizer...
+   ✅ Authorization successful
+   📨 Response details:
+   └── Status: 200 OK
+   └── Document content: "This is a sample document accessible only by its owner. "
+
+   ─────────────────────────────────────
 
 
 2️⃣  Team Access
    Scenario: 👨 Bob accessing team document (team-doc-1.txt)
    Expectation: Access should be granted (Bob is team member)
 
-   ✅ Successfully accessed document
-   📄 Document content read from S3: "This is a sample document accessible by team members. "
+   🎟️  Creating JWT token for user: bob
+   📝 Token payload: {
+  "sub": "bob"
+}
+
+   🌐 Making API request:
+   └── URL: https://4qw19xcy87.execute-api.us-east-1.amazonaws.com/prod//documents/team-doc-1.txt
+   └── Headers:
+      ├── Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
+      └── Warrant-Token: MTczMzMzODIzMjgxMjk1...
+
+   ⏳ Awaiting response from Lambda authorizer...
+   ✅ Authorization successful
+   📨 Response details:
+   └── Status: 200 OK
+   └── Document content: "This is a sample document accessible by team members. "
+
+   ─────────────────────────────────────
 
 
 3️⃣  Testing Unauthorized Access
    Scenario: 🧑 Charlie attempting to access protected document (owner-only-doc.txt)
    Expectation: 🧑 Charlie should be denied access as he is not authorized
 
-   ✅ Correctly denied access
-   🛡️  Error: {"Message":"User is not authorized to access this resource with an explicit deny"}
+   🎟️  Creating JWT token for user: charlie
+   📝 Token payload: {
+  "sub": "charlie"
+}
+
+   🌐 Making API request:
+   └── URL: https://4qw19xcy87.execute-api.us-east-1.amazonaws.com/prod//documents/owner-only-doc.txt
+   └── Headers:
+      ├── Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
+      └── Warrant-Token: MTczMzMzODIzMjgxMjk1...
+
+   ⏳ Awaiting response from Lambda authorizer...
+   ✅ Authorization correctly denied
+   📨 Response details:
+   └── Status: 403
+   └── Error: {"Message":"User is not authorized to access this resource with an explicit deny"}
+
+   ─────────────────────────────────────
 ```
 
 You can review the `demo.ts` script to see how FGA warrants are defined and used in checks, and how requests are made to the deployed Lambda + API Gateway infrastructure. 
