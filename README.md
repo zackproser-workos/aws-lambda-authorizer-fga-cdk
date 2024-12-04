@@ -151,6 +151,75 @@ curl -H "Authorization: Bearer ${TOKEN}" \
   - WorkOS FGA enforces fine-grained permissions
   - IAM roles follow least privilege principle
 
+### Demo Output
+
+When you run `npm run demo`, you'll see a comprehensive demonstration of the FGA authorization rules and API access:
+
+```bash
+> workos-fga-lambda-s3@1.0.0 demo
+> ts-node scripts/demo.ts
+
+
+📚 WorkOS FGA Demo: Document Access Control
+
+Part 1: Testing FGA Rules Directly
+
+🏗️  Setting up test environment...
+├── Creating Engineering team
+├── Adding test users:
+│   ├── Alice (Engineering team member)
+│   ├── Bob (Engineering team member)
+│   └── Charlie (No team affiliations)
+└── Creating test documents:
+    ├── owner-only-doc.txt (owned by Alice)
+    └── team-doc-1.txt (shared with Engineering team)
+🧪 Testing FGA Authorization Rules:
+
+
+🔍 Direct FGA Authorization Checks:
+
+   👩 Alice can view her own document: ✅
+   👨 Bob can view team document: ✅
+   🧑 Charlie cannot view Alice's document: ✅
+
+Part 2: Testing API Access
+
+🏗️  Getting API Gateway URL...
+
+🔑 Testing document access through API:
+
+
+1️⃣  Owner Access
+   Scenario: 👩 Alice accessing her personal document (owner-only-doc.txt)
+   Expectation: Access should be granted (Alice is owner)
+
+   ✅ Successfully accessed document
+   📄 Document content read from S3: "This is a sample document accessible only by its owner. "
+
+
+2️⃣  Team Access
+   Scenario: 👨 Bob accessing team document (team-doc-1.txt)
+   Expectation: Access should be granted (Bob is team member)
+
+   ✅ Successfully accessed document
+   📄 Document content read from S3: "This is a sample document accessible by team members. "
+
+
+3️⃣  Testing Unauthorized Access
+   Scenario: 🧑 Charlie attempting to access protected document (owner-only-doc.txt)
+   Expectation: 🧑 Charlie should be denied access as he is not authorized
+
+   ✅ Correctly denied access
+   🛡️  Error: {"Message":"User is not authorized to access this resource with an explicit deny"}
+```
+
+This demo showcases:
+- FGA rule validation for document access
+- Team-based permissions
+- Owner-specific access controls
+- API Gateway integration with FGA authorization
+- Proper denial of unauthorized access attempts
+
 ## Troubleshooting
 
 Common issues and solutions:
