@@ -1,6 +1,6 @@
 # WorkOS FGA S3 Authorization Demo
 
-<img src="./img/fga-lambda-authorizer.webp" alt="WorkOS FGA S3 Demo" width="650"/>
+![WorkOS FGA S3 Demo](./img/fga-lambda-authorizer.webp)
 
 A project demonstrating an implementation of fine-grained authorization for AWS S3 using WorkOS FGA and AWS Lambda authorizers. This project deploys serverless infrastructure that showcases secure document access control.
 
