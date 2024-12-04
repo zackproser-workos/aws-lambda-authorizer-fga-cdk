@@ -3,8 +3,13 @@ import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as nodejsfunction from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
 import * as path from 'path';
+import * as dotenv from 'dotenv';
+
+// Load environment variables from .env.local
+dotenv.config({ path: '.env.local' });
 
 interface ApiGatewayStackProps extends cdk.StackProps {
   bucket: s3.Bucket;
@@ -14,13 +19,27 @@ export class ApiGatewayStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: ApiGatewayStackProps) {
     super(scope, id, props);
 
-    // Create Lambda function for the authorizer
-    const authorizerFn = new lambda.Function(this, 'AuthorizerFunction', {
+    // Create Lambda function for the authorizer using NodejsFunction
+    const authorizerFn = new nodejsfunction.NodejsFunction(this, 'AuthorizerFunction', {
       runtime: lambda.Runtime.NODEJS_18_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset(path.join(__dirname, '../src/authorizer')),
+      handler: 'handler',
+      entry: path.join(__dirname, '../src/authorizer/index.ts'),
+      description: `v1.0.0 built at ${new Date().toISOString()}`,
       environment: {
         WORKOS_API_KEY: process.env.WORKOS_API_KEY || '',
+        JWT_SECRET: process.env.JWT_SECRET || 'your-secret-key',
+      },
+      bundling: {
+        minify: true,
+        sourceMap: true,
+        format: nodejsfunction.OutputFormat.CJS,
+        mainFields: ['main', 'module'],
+        target: 'node18',
+        externalModules: [
+          'aws-sdk',
+        ],
+        forceDockerBundling: true,
+        logLevel: nodejsfunction.LogLevel.INFO,
       },
     });
 

@@ -1,0 +1,20 @@
+version 0.1
+
+type user
+
+type team
+  relation member [user]
+
+type report
+  relation parent [team]
+  relation owner [user]
+  relation editor [user]
+  relation viewer [user]
+
+  inherit editor if
+    relation owner
+
+  inherit viewer if
+    any_of
+      relation editor
+      relation member on parent [team]

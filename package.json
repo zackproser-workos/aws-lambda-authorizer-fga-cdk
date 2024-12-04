@@ -8,20 +8,29 @@
     "cdk": "cdk",
     "deploy": "cdk deploy",
     "diff": "cdk diff",
-    "test": "jest"
+    "test": "jest",
+    "demo": "ts-node scripts/demo.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-cloudformation": "^3.0.0",
+    "@aws-sdk/credential-provider-node": "^3.0.0",
+    "@aws-sdk/credential-providers": "^3.699.0",
+    "@types/aws-lambda": "^8.10.0",
+    "@workos-inc/node": "^7.34.0",
     "aws-cdk-lib": "^2.0.0",
+    "axios": "^1.0.0",
     "constructs": "^10.0.0",
-    "@types/aws-lambda": "^8.10.0"
+    "dotenv": "^16.0.0",
+    "jsonwebtoken": "^9.0.0"
   },
   "devDependencies": {
     "@types/jest": "^29.0.0",
+    "@types/jsonwebtoken": "^9.0.0",
     "@types/node": "^20.0.0",
+    "aws-cdk": "^2.0.0",
     "jest": "^29.0.0",
     "ts-jest": "^29.0.0",
-    "typescript": "^5.0.0",
     "ts-node": "^10.0.0",
-    "aws-cdk": "^2.0.0"
+    "typescript": "^5.0.0"
   }
-} 
+}

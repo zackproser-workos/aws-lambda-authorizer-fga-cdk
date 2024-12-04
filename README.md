@@ -34,10 +34,38 @@ graph TD
 - AWS CLI configured
 - WorkOS account and API key
 - CDK CLI (`npm install -g aws-cdk`)
+- WorkOS CLI
 
 ## Setup
 
-1. **AWS IAM Setup**
+1. **Install and Configure WorkOS CLI**
+   ```bash
+   # Install using Homebrew
+   brew install workos/tap/workos-cli
+
+   # Initialize WorkOS CLI configuration
+   workos init
+   ```
+   Follow the prompts to complete your setup.
+
+2. **Configure WorkOS FGA Schema**
+   
+   We've created a schema for you in `schema.txt`. This schema defines:
+   - User types and team memberships
+   - Report access control with owner, editor, and viewer roles
+   - Inheritance rules where:
+     - Owners automatically get editor permissions
+     - Editors automatically get viewer permissions
+     - Team members can view reports owned by their team
+
+   Note: Applying a new schema will replace any existing schema. Make sure to backup your current schema if needed.
+
+   Apply the schema to your WorkOS organization:
+   ```bash
+   workos fga schema apply schema.txt
+   ```
+
+3. **AWS IAM Setup**
 
    Create an IAM user with programmatic access and the following permissions:
    - AWSCloudFormationFullAccess
@@ -51,19 +79,19 @@ graph TD
    aws configure
    ```
 
-2. **Clone and Install Dependencies**
+4. **Clone and Install Dependencies**
    ```bash
    git clone <repository-url>
    cd workos-fga-s3-demo
    npm install
    ```
 
-3. **Environment Configuration**
+5. **Environment Configuration**
    ```bash
    export WORKOS_API_KEY=your_api_key_here
    ```
 
-4. **Deploy Infrastructure**
+6. **Deploy Infrastructure**
    ```bash
    # Bootstrap CDK (first time only)
    cdk bootstrap
@@ -71,6 +99,23 @@ graph TD
    # Deploy all stacks
    cdk deploy --all
    ```
+
+7. **Run the Demo Script**
+   
+   We've included a demo script that sets up test users, teams, and reports, then runs through various authorization scenarios to demonstrate the FGA schema in action:
+
+   ```bash
+   npm run demo
+   ```
+
+   The demo will:
+   - Create a team with two members (user1, user2)
+   - Set up three reports with different permission configurations
+   - Run test cases to verify:
+     - Owner permission inheritance (owner → editor → viewer)
+     - Editor permission inheritance (editor → viewer)
+     - Team-based access controls
+     - Permission denials for unauthorized users
 
 ## Project Structure
 

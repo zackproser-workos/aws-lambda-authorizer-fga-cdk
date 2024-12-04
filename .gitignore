@@ -21,7 +21,10 @@ node_modules/
 # Environment files
 .env
 .env.local
-.env.*.local
+.env.*
+
+# Home directory (just in case)
+~/
 
 # Test coverage
 coverage/
