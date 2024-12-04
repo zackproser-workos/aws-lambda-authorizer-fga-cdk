@@ -1,6 +1,6 @@
 # WorkOS FGA S3 Authorization Demo
 
-A demonstration project showing how to implement fine-grained authorization for AWS S3 using WorkOS FGA and AWS Lambda authorizers. This project deploys a complete serverless infrastructure that showcases secure document access control.
+A project demonstrating an implementation of fine-grained authorization for AWS S3 using WorkOS FGA and AWS Lambda authorizers. This project deploys serverless infrastructure that showcases secure document access control.
 
 ## Overview
 
@@ -18,21 +18,12 @@ The deployed infrastructure includes:
 
 This can serve as a starting point for implementing document management systems requiring fine-grained access control.
 
-## Architecture
-
-```mermaid
-graph TD
-    A[API Gateway] --> B[Lambda Authorizer]
-    B --> C[WorkOS FGA]
-    A --> D[S3 Bucket]
-```
-
 ## Prerequisites
 
 - AWS Account with appropriate permissions
 - Node.js 18 or later
 - AWS CLI configured
-- WorkOS account and API key
+- [WorkOS account](https://dashboard.workos.com/sign-in) and API key
 - CDK CLI (`npm install -g aws-cdk`)
 - WorkOS CLI
 
@@ -48,7 +39,26 @@ graph TD
    ```
    Follow the prompts to complete your setup.
 
-2. **Configure WorkOS FGA Schema**
+2. **Clone and Install Dependencies**
+   ```bash
+   git clone <repository-url>
+   cd workos-fga-s3-demo
+   npm install
+   ```
+
+3. **Environment Configuration**
+   ```bash
+   # Copy the example environment file
+   cp .env.example .env
+
+   # Edit .env and fill in the required values:
+   # - WORKOS_API_KEY=sk_test_xxxxxxxxxxxx
+   # - JWT_SECRET=your-secret-key-here
+   # - AWS_REGION=us-east-1 (optional)
+   # - AWS_PROFILE=default (optional)
+   ```
+
+4. **Configure WorkOS FGA Schema**
    
    We've created a schema for you in `schema.txt`. This schema defines:
    - User types and team memberships
@@ -65,7 +75,7 @@ graph TD
    workos fga schema apply schema.txt
    ```
 
-3. **AWS IAM Setup**
+5. **AWS IAM Setup**
 
    Create an IAM user with programmatic access and the following permissions:
    - AWSCloudFormationFullAccess
@@ -79,18 +89,6 @@ graph TD
    aws configure
    ```
 
-4. **Clone and Install Dependencies**
-   ```bash
-   git clone <repository-url>
-   cd workos-fga-s3-demo
-   npm install
-   ```
-
-5. **Environment Configuration**
-   ```bash
-   export WORKOS_API_KEY=your_api_key_here
-   ```
-
 6. **Deploy Infrastructure**
    ```bash
    # Bootstrap CDK (first time only)
@@ -101,21 +99,9 @@ graph TD
    ```
 
 7. **Run the Demo Script**
-   
-   We've included a demo script that sets up test users, teams, and reports, then runs through various authorization scenarios to demonstrate the FGA schema in action:
-
    ```bash
    npm run demo
    ```
-
-   The demo will:
-   - Create a team with two members (user1, user2)
-   - Set up three reports with different permission configurations
-   - Run test cases to verify:
-     - Owner permission inheritance (owner → editor → viewer)
-     - Editor permission inheritance (editor → viewer)
-     - Team-based access controls
-     - Permission denials for unauthorized users
 
 ## Project Structure
 
@@ -202,10 +188,3 @@ To modify the infrastructure:
    cdk deploy --all
    ```
 
-Available npm scripts:
-
-```bash
-npm run build    # Compile TypeScript
-npm run watch    # Watch for changes
-npm run test     # Run tests
-```

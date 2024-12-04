@@ -11,26 +11,28 @@ function getUserIdFromToken(token: string): string {
   }
   const tokenString = token.split(' ')[1];
   const decoded = jwt.verify(tokenString, JWT_SECRET) as { sub: string };
-  console.log('Decoded token:', decoded);
+  console.log('🔍 Decoded token:', decoded);
   return decoded.sub;
 }
 
 export const handler = async (event: APIGatewayTokenAuthorizerEvent): Promise<APIGatewayAuthorizerResult> => {
   try {
+    console.log('🔑 Authorization event received');
+    console.log('Event details:', JSON.stringify(event, null, 2));
+
     const token = event.authorizationToken;
-    // Extract document ID from the request context
     const documentId = event.methodArn.split(':').pop()?.split('/').pop();
     if (!documentId) {
       throw new Error('Could not extract document ID from request');
     }
 
     const userId = getUserIdFromToken(token);
+    console.log(`🔍 Checking if 👤 User ID: ${userId} can access 📄 Document ID: ${documentId}`);
 
-    // Check if user has viewer access to the document
     const checkResponse = await workos.fga.check({
       checks: [{
         resource: { 
-          resourceType: 'report',  // Changed from 'document' to match our schema
+          resourceType: 'report',
           resourceId: documentId 
         },
         relation: 'viewer',
@@ -40,6 +42,8 @@ export const handler = async (event: APIGatewayTokenAuthorizerEvent): Promise<AP
         }
       }]
     });
+
+    console.log('✅ FGA check response:', checkResponse);
 
     return {
       principalId: userId,
@@ -55,7 +59,7 @@ export const handler = async (event: APIGatewayTokenAuthorizerEvent): Promise<AP
       },
     };
   } catch (error) {
-    console.error('Authorization error:', error);
+    console.error('❌ Authorization error:', (error as Error).message);
     throw new Error('Unauthorized');
   }
 }; 

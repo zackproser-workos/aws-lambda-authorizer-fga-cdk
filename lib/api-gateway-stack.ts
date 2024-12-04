@@ -71,11 +71,11 @@ export class ApiGatewayStack extends cdk.Stack {
     document.addMethod('GET', new apigateway.AwsIntegration({
       service: 's3',
       integrationHttpMethod: 'GET',
-      path: `${props.bucket.bucketName}/{document}`,
+      path: `${props.bucket.bucketName}/{documentId}`,
       options: {
         credentialsRole: apiGatewayRole,
         requestParameters: {
-          'integration.request.path.document': 'method.request.path.documentId',
+          'integration.request.path.documentId': 'method.request.path.documentId',
         },
         integrationResponses: [{
           statusCode: '200',
