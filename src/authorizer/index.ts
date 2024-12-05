@@ -32,7 +32,7 @@ export const handler = async (event: APIGatewayTokenAuthorizerEvent): Promise<AP
     const checkResponse = await workos.fga.check({
       checks: [{
         resource: { 
-          resourceType: 'report',
+          resourceType: 'document',
           resourceId: documentId 
         },
         relation: 'viewer',

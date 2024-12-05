@@ -101,13 +101,13 @@ async function runFGATests() {
     },
     {
       op: WarrantOp.Create,
-      resource: { resourceType: 'report', resourceId: 'owner-only-doc.txt' },
+      resource: { resourceType: 'document', resourceId: 'owner-only-doc.txt' },
       relation: 'owner',
       subject: { resourceType: 'user', resourceId: 'alice' }
     },
     {
       op: WarrantOp.Create,
-      resource: { resourceType: 'report', resourceId: 'team-doc-1.txt' },
+      resource: { resourceType: 'document', resourceId: 'team-doc-1.txt' },
       relation: 'parent',
       subject: { resourceType: 'team', resourceId: 'engineering' }
     }
@@ -126,7 +126,7 @@ async function runDirectTests() {
     {
       desc: `${TEST_USERS.alice.emoji} Alice can view her own document`,
       check: {
-        resource: { resourceType: 'report', resourceId: TEST_DOCUMENTS.ownerOnly },
+        resource: { resourceType: 'document', resourceId: TEST_DOCUMENTS.ownerOnly },
         relation: 'viewer',
         subject: { resourceType: 'user', resourceId: TEST_USERS.alice.id }
       },
@@ -135,7 +135,7 @@ async function runDirectTests() {
     {
       desc: `${TEST_USERS.bob.emoji} Bob can view team document`,
       check: {
-        resource: { resourceType: 'report', resourceId: TEST_DOCUMENTS.teamShared },
+        resource: { resourceType: 'document', resourceId: TEST_DOCUMENTS.teamShared },
         relation: 'viewer',
         subject: { resourceType: 'user', resourceId: TEST_USERS.bob.id }
       },
@@ -144,7 +144,7 @@ async function runDirectTests() {
     {
       desc: `${TEST_USERS.charlie.emoji} Charlie cannot view Alice's document`,
       check: {
-        resource: { resourceType: 'report', resourceId: TEST_DOCUMENTS.ownerOnly },
+        resource: { resourceType: 'document', resourceId: TEST_DOCUMENTS.ownerOnly },
         relation: 'viewer',
         subject: { resourceType: 'user', resourceId: TEST_USERS.charlie.id }
       },

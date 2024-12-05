@@ -63,11 +63,11 @@ This can serve as a starting point for implementing document management systems 
    
    We've created a schema for you in `schema.txt`. This schema defines:
    - User types and team memberships
-   - Report access control with owner, editor, and viewer roles
+   - Document access control with owner, editor, and viewer roles
    - Inheritance rules where:
      - Owners automatically get editor permissions
      - Editors automatically get viewer permissions
-     - Team members can view reports owned by their team
+     - Team members can view documents owned by their team
 
    Note: Applying a new schema will replace any existing schema. Make sure to backup your current schema if needed.
 
@@ -291,7 +291,7 @@ Example FGA check from the authorizer:
 const checkResponse = await workos.fga.check({
   checks: [{
     resource: { 
-      resourceType: 'report',
+      resourceType: 'document',
       resourceId: documentId 
     },
     relation: 'viewer',

@@ -5,7 +5,7 @@ type user
 type team
   relation member [user]
 
-type report
+type document
   relation parent [team]
   relation owner [user]
   relation editor [user]
